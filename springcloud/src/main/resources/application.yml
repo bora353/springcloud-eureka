@@ -1,0 +1,27 @@
+server:
+  port: 8082
+
+spring:
+  application:
+    name: gateWay
+  cloud:
+    gateway:
+      routes:
+        - id: this_is_another_service
+          uri: lb://ANOTHERSERVICE
+          predicates:
+            - Path=/another/**
+
+        - id: discover
+          uri: http://localhost:8761
+          predicates:
+            - Path=/**
+
+eureka:
+  instance:
+    instance-id: ${spring.cloud.client.hostname}:${server.port}:${spring.application.instance_id:${random.value}}
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://localhost:8761/eureka
